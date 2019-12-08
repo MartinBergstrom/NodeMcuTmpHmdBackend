@@ -50,7 +50,7 @@ public class LogResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     public Response postLog(String logLine) {
-        String finalLogLine = getTimeStamp() + logLine;
+        String finalLogLine = getTimeStamp() + ":" + logLine;
   
         try {
         	myCustomFileWriter.writeLine(finalLogLine);

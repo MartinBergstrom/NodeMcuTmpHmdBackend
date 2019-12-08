@@ -29,8 +29,7 @@ public class CustomFileWriter {
     }
 
     public static String getFileName() {
-        //return System.getProperty("user.dir") + File.separator + "log" + FILE_NBR + ".txt";
-    	return "C:\\Users\\Martin\\Documents\\log" + FILE_NBR + ".txt";
+    	return "/volume1/homes/tomcatUploads/log" + FILE_NBR + ".txt";
     }
 
     private boolean overSizeLimit(File file) {
