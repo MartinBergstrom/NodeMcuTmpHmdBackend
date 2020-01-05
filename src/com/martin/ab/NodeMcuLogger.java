@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class CustomFileWriter {
+public class NodeMcuLogger {
     private static final int MAX_ALLOWED_LOG_FILE_SIZE_MB = 200;
     private static int FILE_NBR = 1;
 

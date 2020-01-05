@@ -16,12 +16,15 @@ import javax.ws.rs.core.Response;
 
 @Path("/log")
 public class LogResource {
-   private CustomFileWriter myCustomFileWriter = new CustomFileWriter();
+   private NodeMcuLogger myNodeMcuLogger = new NodeMcuLogger();
+   private static final AppLogger myLogger = new AppLogger();
       
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response doGet() throws IOException {
-		String fileName = CustomFileWriter.getFileName();
+		long startTime = System.currentTimeMillis();
+		
+		String fileName = NodeMcuLogger.getFileName();
 
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
 	    StringBuilder sb = new StringBuilder();
@@ -36,13 +39,19 @@ public class LogResource {
 		} finally {
 		    br.close();
 		}
+		
+		String finalLog = sb.toString();
+		
+	    long stopTime = System.currentTimeMillis();
+	    long elapsedTime = stopTime - startTime;
+	    myLogger.log("Time for GET log: " + elapsedTime + " ms");
         
         return Response.status(200)
         .header("Access-Control-Allow-Origin", "*")
         .header("Access-Control-Allow-Credentials", "true")
         .header("Access-Control-Allow-Methods", "POST, GET")
         .header("Access-Control-Allow-Headers", "Content-Type")
-        .entity(sb.toString())
+        .entity(finalLog)
         .build();
 	}
 
@@ -50,10 +59,17 @@ public class LogResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     public Response postLog(String logLine) {
+		long startTime = System.currentTimeMillis();
+
         String finalLogLine = getTimeStamp() + ":" + logLine;
   
         try {
-        	myCustomFileWriter.writeLine(finalLogLine);
+        	myNodeMcuLogger.writeLine(finalLogLine);
+        	
+        	long stopTime = System.currentTimeMillis();
+      	    long elapsedTime = stopTime - startTime;
+      	    myLogger.log("Time for POST new  log entry: " + elapsedTime + " ms");
+      	    
         } catch (IOException e) {
             e.printStackTrace();
             return Response.status(500).entity("Error occurred during writing to file..")
